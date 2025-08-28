@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour guide</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #fdf6f0; }
+    header { background: linear-gradient(45deg, #006400, #228B22); color: white; padding: 40px; text-align: center; }
+    nav { display: flex; justify-content: center; gap: 20px; background: #2e7d32; padding: 12px; }
+    nav a { color: white; text-decoration: none; font-weight: bold; transition: 0.3s; }
+    nav a:hover { color: #ffeb3b; }
+
+    section { padding: 40px; display: none; animation: fadeIn 0.6s ease-in-out; }
+    section.active { display: block; }
+
+    .card { 
+      background: light green; 
+      border-radius: 12px; 
+      padding: 20px; 
+      margin: 15px; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+
+    #map { height: 400px; width: 100%; border-radius: 12px; margin-top: 20px; }
+
+    textarea { width: 100%; height: 80px; margin: 10px 0; border-radius: 8px; padding: 10px; }
+    button { background: #2e7d32; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+    button:hover { background: #43a047; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌴 Cholas Tour Guide</h1>
+    <p>"Where Tradition Meets Nature"</p>
+  </header>
+
+  <nav>
+    <a href="#" onclick="showModule('home')">Home</a>
+    <a href="#" onclick="showModule('destinations')">Destinations</a>
+    <a href="#" onclick="showModule('itinerary')">Itinerary</a>
+    <a href="#" onclick="showModule('food')">Stay & Food</a>
+    <a href="#" onclick="showModule('culture')">Culture</a>
+    <a href="#" onclick="showModule('mapSection')">Map</a>
+  </nav>
+
+  <!-- Home -->
+  <section id="home" class="active">
+    <h2>Welcome to Tamil Nadu!</h2>
+    <p>Discover the land of temples, beaches, and hill stations. Plan your journey with us.</p>
+<image src="nature.webp"></image>
+  </section>
+
+  <!-- Destinations -->
+  <section id="destinations">
+    <h2>Beautiful Places in Tamil Nadu</h2>
+    <div class="card">🌸 Ooty – Queen of Hill Stations</div>
+    <div class="card">🌄 Kodaikanal – Princess of Hills</div>
+    <div class="card">⛪ Madurai – Temple City (Meenakshi Amman Temple)</div>
+    <div class="card">🌉 Rameswaram – Spiritual Gateway</div>
+    <div class="card">🏛️ Mahabalipuram – UNESCO Heritage Temples</div>
+    <div class="card">🏖️ Marina Beach, Chennai – Longest Urban Beach</div>
+  </section>
+
+  <!-- Itinerary -->
+  <section id="itinerary">
+    <h2>Plan Your Itinerary</h2>
+    <p>Enter number of days for your trip:</p>
+    <input type="number" id="days" placeholder="Enter days" min="1">
+    <button onclick="planTrip()">Get Plan</button>
+    <div id="planResult"></div>
+  </section>
+
+  <!-- Stay & Food -->
+  <section id="food">
+    <h2>Stay & Tamil Nadu Cuisine</h2>
+    <div class="card">🏨 Taj Fisherman’s Cove, Chennai</div>
+    <div class="card">🏡 Sterling Resorts, Ooty</div>
+    <div class="card">🍲 Chettinad Cuisine – Spicy & Flavorful</div>
+    <div class="card">🍛 Famous Dishes – Idli, Dosa, Pongal, Filter Coffee</div>
+  </section>
+
+  <!-- Culture -->
+  <section id="culture">
+    <h2>Culture & Festivals</h2>
+    <ul>
+      <li>🎭 Bharatanatyam – Classical Dance of Tamil Nadu</li>
+      <li>🎉 Pongal Festival – Harvest Celebration</li>
+      <li>🎶 Carnatic Music & Temple Architecture</li>
+      <li>🛕 Rich Temple Heritage across the state</li>
+    </ul>
+    <textarea id="review" placeholder="Share your experience..."></textarea>
+    <button onclick="submitReview()">Submit</button>
+    <div id="reviewsList"></div>
+  </section>
+
+  <!-- Map -->
+  <section id="mapSection">
+    <h2>Explore Tamil Nadu on Map</h2>
+    <div id="map"></div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    function showModule(moduleId) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(moduleId).classList.add("active");
+    }
+
+    function planTrip() {
+      let days = document.getElementById("days").value;
+      let result = document.getElementById("planResult");
+      if (days > 0) {
+        result.innerHTML = `✨ Suggested ${days}-day Plan:<br>
+        Day 1 - Chennai (Marina Beach, Kapaleeshwarar Temple)<br>
+        Day 2 - Mahabalipuram (Shore Temple, Arjuna’s Penance)<br>
+        Day 3 - Madurai (Meenakshi Temple)<br>
+        Day 4 - Kodaikanal/Ooty (Hill Station)<br>
+        Day 5 - Rameswaram (Pamban Bridge & Temple)`;
+      } else {
+        result.innerHTML = "⚠️ Please enter a valid number of days!";
+      }
+    }
+
+    function submitReview() {
+      let review = document.getElementById("review").value;
+      if (review.trim() !== "") {
+        let list = document.getElementById("reviewsList");
+        let newReview = document.createElement("p");
+        newReview.textContent = "📝 " + review;
+        list.appendChild(newReview);
+        document.getElementById("review").value = "";
+      }
+    }
+
+    // Map
+    var map = L.map('map').setView([10.8, 78.7], 6); // Tamil Nadu center
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add markers
+    L.marker([11.41, 76.7]).addTo(map).bindPopup("🌸 Ooty – Hill Station");
+    L.marker([10.23, 77.48]).addTo(map).bindPopup("🌄 Kodaikanal – Hills");
+    L.marker([9.92, 78.12]).addTo(map).bindPopup("⛪ Madurai – Meenakshi Temple");
+    L.marker([9.28, 79.31]).addTo(map).bindPopup("🌉 Rameswaram – Pamban Bridge");
+    L.marker([12.62, 80.19]).addTo(map).bindPopup("🏛️ Mahabalipuram – Shore Temple");
+    L.marker([13.05, 80.28]).addTo(map).bindPopup("🏖️ Chennai – Marina Beach");
+  </script>
+
+</body>
+</html>
